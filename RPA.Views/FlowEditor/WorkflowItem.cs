@@ -15,7 +15,7 @@ using System.Xml.XPath;
 
 namespace RPA.Views.FlowEditor
 {
-    public class WorkflowItem:BaseFlowNode
+    public class WorkflowItem : BaseFlowNode
     {
         public WorkflowItem()
         {
@@ -218,7 +218,7 @@ namespace RPA.Views.FlowEditor
 
         internal WorkflowItem FirstOrDefault(object item)
         {
-            return EditorParent.FirstOrDefault(item);
+            return null;//EditorParent.FirstOrDefault(item);
         }
 
         public void UpdateCurve()

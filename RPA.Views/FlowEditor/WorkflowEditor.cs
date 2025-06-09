@@ -76,7 +76,7 @@ namespace RPA.Views.FlowEditor
         /// <summary>
         /// 所有节点集合
         /// </summary>
-        public IEnumerable<WorkflowItem> WorkflowItems => Children.OfType<WorkflowItem>();
+        public IEnumerable<FlowNode> WorkflowItems => Children.OfType<FlowNode>();
 
         /// <summary>
         /// 缩放
@@ -293,7 +293,7 @@ namespace RPA.Views.FlowEditor
                     {
                         SetTop(item, minY);
                     }
-                    item.UpdateCurve();
+                    //item.UpdateCurve();
                     //if (GetLeft(item) > ActualWidth - item.ActualWidth)
                     //{
                     //    SetLeft(item, ActualWidth - item.ActualWidth);
@@ -458,14 +458,14 @@ namespace RPA.Views.FlowEditor
             }
         }
 
-        private void PositionWorkflowItem(WorkflowItem workflowItem)
+        private void PositionWorkflowItem(FlowNode workflowItem)
         {
             SetLeft(workflowItem, Adsorb(GetLeft(workflowItem)));
             SetTop(workflowItem, Adsorb(GetTop(workflowItem)));
-            Dispatcher.InvokeAsync(() =>
-            {
-                workflowItem.UpdateCurve();
-            }, DispatcherPriority.Render);
+            //Dispatcher.InvokeAsync(() =>
+            //{
+            //    workflowItem.UpdateCurve();
+            //}, DispatcherPriority.Render);
         }
 
         private double Adsorb(double value)
@@ -473,17 +473,17 @@ namespace RPA.Views.FlowEditor
             return value.Adsorb(GridSize);
         }
 
-        public WorkflowItem FirstOrDefault(object item)
+        public FlowNode FirstOrDefault(object item)
         {
-            var workflowItem = WorkflowItems.FirstOrDefault(x => x.DataContext == item);
-            workflowItem ??= new WorkflowItem();
-            return workflowItem;
+            var flowNode = WorkflowItems.FirstOrDefault(x => x.DataContext == item);
+            flowNode ??= new FlowNode();
+            return flowNode;
         }
 
-        private bool CheckOverlap(RectangleGeometry rectangleGeometry, WorkflowItem workflowItem)
+        private bool CheckOverlap(RectangleGeometry rectangleGeometry, FlowNode flowNode)
         {
-            GeneralTransform transform = workflowItem.TransformToVisual(this);
-            Geometry geometry = workflowItem.Geometry?.Clone();
+            GeneralTransform transform = flowNode.TransformToVisual(this);
+            Geometry geometry = flowNode.Geometry?.Clone();
             if (geometry != null)
             {
                 geometry.Transform = (Transform)transform;
