@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +48,10 @@ namespace RPA.Views.FlowEditor
 
         public static readonly DependencyProperty MousePositionProperty =
          DependencyProperty.Register(nameof(MousePosition), typeof(Point), typeof(WorkflowEditor));
+
+        public static readonly DependencyProperty ItemsSourceProperty =
+        DependencyProperty.Register(nameof(ItemsSource), typeof(IEnumerable), typeof(WorkflowEditor), new PropertyMetadata(OnItemsSourceChanged));
+
         #endregion
 
         //鼠标选中多个元素的Rectangle遮罩
@@ -68,7 +73,7 @@ namespace RPA.Views.FlowEditor
         private bool _isUpdatingSelectedItems;
 
         private PathItem _currentPath;
-        private WorkflowItem _lastWorkflowItem;
+        private FlowNode _lastWorkflowItem;
         private EllipseItem _lastEllipseItem;
 
         private Point _pathStartPoint;
@@ -133,6 +138,12 @@ namespace RPA.Views.FlowEditor
         {
             get => (Point)GetValue(MousePositionProperty);
             set => SetValue(MousePositionProperty, value);
+        }
+
+        public IEnumerable ItemsSource
+        {
+            get => (IEnumerable)GetValue(ItemsSourceProperty);
+            set => SetValue(ItemsSourceProperty, value);
         }
 
         public WorkflowEditor()
@@ -220,21 +231,21 @@ namespace RPA.Views.FlowEditor
                 if (EditorStatus == EditorStatus.Drawing)
                 {
                     Point point = e.GetPosition(this);
-                    //var endEllipseItem = GetEllipseWithPoint(point);
-                    //if (endEllipseItem != null)
-                    //{
-                    //    SetStep(_lastWorkflowItem.DataContext, endEllipseItem.WorkflowParent.DataContext, _lastEllipseItem, endEllipseItem);
-                    //}
+                    var endEllipseItem = GetEllipseWithPoint(point);
+                    if (endEllipseItem != null)
+                    {
+                        SetStep(_lastWorkflowItem.DataContext, endEllipseItem.WorkflowParent.DataContext, _lastEllipseItem, endEllipseItem);
+                    }
                 }
                 else if (EditorStatus == EditorStatus.Moving)
                 {
-                    //var workflowItem = _lastWorkflowItem;
-                    //if (workflowItem == null || !workflowItem.IsDraggable)
-                    //{
-                    //    return;
-                    //}
+                    var workflowItem = _lastWorkflowItem;
+                    if (workflowItem == null || !workflowItem.IsDraggable)
+                    {
+                        return;
+                    }
 
-                    //PositionWorkflowItem(workflowItem);
+                    PositionWorkflowItem(workflowItem);
                 }
                 else if (EditorStatus == EditorStatus.MultiMoving)
                 {
@@ -256,6 +267,56 @@ namespace RPA.Views.FlowEditor
                 EditorStatus = EditorStatus.None;
             }
         }
+        internal void SetStep(object fromStep, object toStep, EllipseItem fromEllipse, EllipseItem toEllipse)
+        {
+            if (fromEllipse == toEllipse)
+            {
+                return;
+            }
+            if (fromStep == toStep)
+            {
+                return;
+            }
+            else if (fromEllipse.PathItem != null || toEllipse.PathItem != null)
+            {
+                return;
+            }
+            else if (fromEllipse.Dock == Dock.Left || toEllipse.Dock == Dock.Right)
+            {
+                return;
+            }
+            else if (fromEllipse.Dock == Dock.Top || toEllipse.Dock == Dock.Bottom)
+            {
+                return;
+            }
+            else if (fromEllipse.Dock == Dock.Right && toEllipse.Dock == Dock.Top)
+            {
+                return;
+            }
+            else if (fromEllipse.Dock == Dock.Bottom && toEllipse.Dock == Dock.Left)
+            {
+                return;
+            }
+            else
+            {
+                var fromWorkflow = FirstOrDefault(fromStep);
+                var toWorkflow = FirstOrDefault(toStep);
+                if (fromEllipse.Dock == Dock.Right)
+                {
+                    fromWorkflow.JumpStep = toStep;
+                    toWorkflow.FromStep = fromStep;
+                }
+                else if (fromEllipse.Dock == Dock.Bottom)
+                {
+                    fromWorkflow.NextStep = toStep;
+                    toWorkflow.LastStep = fromStep;
+                }
+                fromWorkflow.UpdateCurve();
+                toWorkflow.UpdateCurve();
+            }
+        }
+
+
         private void WorkflowEditor_MouseMove(object sender, MouseEventArgs e)
         {
             Point point = e.GetPosition(this);
@@ -291,17 +352,17 @@ namespace RPA.Views.FlowEditor
                     }
                     if (GetTop(item) < minY)
                     {
-                        SetTop(item, minY);
+                        SetTop(item, minY); 
                     }
-                    //item.UpdateCurve();
-                    //if (GetLeft(item) > ActualWidth - item.ActualWidth)
-                    //{
-                    //    SetLeft(item, ActualWidth - item.ActualWidth);
-                    //}
-                    //if (GetTop(item) > ActualHeight - item.ActualHeight)
-                    //{
-                    //    SetTop(item, ActualHeight - item.ActualHeight);
-                    //}
+                    item.UpdateCurve();
+                    if (GetLeft(item) > ActualWidth - item.ActualWidth)
+                    {
+                        SetLeft(item, ActualWidth - item.ActualWidth);
+                    }
+                    if (GetTop(item) > ActualHeight - item.ActualHeight)
+                    {
+                        SetTop(item, ActualHeight - item.ActualHeight);
+                    }
                 }
             }
             else if (EditorStatus == EditorStatus.Selecting)
@@ -325,7 +386,6 @@ namespace RPA.Views.FlowEditor
                     foreach (var item in WorkflowItems)
                     {
                         item.IsSelected = CheckOverlap(rectangleGeometry, item);
-                        //item.IsSelected = selectedArea.IntersectsWith(new Rect(GetLeft(item), GetTop(item), item.ActualWidth, item.ActualHeight));
                     }
                     EndUpdateSelectedItems();
                 }
@@ -386,6 +446,105 @@ namespace RPA.Views.FlowEditor
 
         #endregion
 
+        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
+        {
+            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+            UpdateSelectedItems();
+            if (visualAdded is FlowNode added)
+            {
+                SetLeft(added, Adsorb(GetLeft(added)));
+                SetTop(added, Adsorb(GetTop(added)));
+
+                //added.EditorParent = this;
+                added.MouseLeftButtonDown += WorkflowItem_MouseLeftButtonDown;
+                added.Selected += WorkflowItem_SelectedChanged;
+                added.Unselected += WorkflowItem_SelectedChanged;
+            }
+            if (visualRemoved is FlowNode removed)
+            {
+                //removed.EditorParent = null;
+                removed.MouseLeftButtonDown -= WorkflowItem_MouseLeftButtonDown;
+                removed.Selected -= WorkflowItem_SelectedChanged;
+                removed.Unselected -= WorkflowItem_SelectedChanged;
+            }
+        }
+
+        private void WorkflowItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var workflowItem = sender as FlowNode;
+            _lastWorkflowItem = workflowItem;
+            Point point = e.GetPosition(this);
+            var startEllipseItem = GetEllipseWithPoint(point);
+            if (startEllipseItem == null)
+            {
+                EditorStatus = EditorStatus.Moving;
+            }
+            else
+            {
+                //_lastWorkflowItem = startEllipseItem.WorkflowParent;
+                _pathStartPoint = startEllipseItem.GetPoint(this);
+                _lastEllipseItem = startEllipseItem;
+                EditorStatus = EditorStatus.Drawing;
+
+                if (_currentPath == null)
+                {
+                    _currentPath = new PathItem(this);
+                    Children.Add(_currentPath);
+                }
+            }
+
+            if ((!workflowItem.IsDraggable && startEllipseItem == null) /*|| CanvasStatus is CanvasStatus.Selecting or CanvasStatus.MultiMoving*/)
+            {
+                return;
+            }
+
+            Cursor = EditorStatus == EditorStatus.Drawing ? Cursors.Cross : Cursors.ScrollAll;
+            _mouseDownPoint = point;
+            _mouseDownControlPoint = new Point(GetLeft(workflowItem), GetTop(workflowItem));
+        }
+
+        private void WorkflowItem_SelectedChanged(object sender, RoutedEventArgs e)
+        {
+            if (!_isUpdatingSelectedItems)
+            {
+                UpdateSelectedItems();
+            }
+        }
+
+        private EllipseItem GetEllipseWithPoint(Point point)
+        {
+            var ellipseItem = this.GetVisualHit<EllipseItem>(point);
+            if (ellipseItem != null && !ellipseItem.IsVisible)
+            {
+                return null;
+            }
+            return ellipseItem;
+        }
+
+        //protected override void OnRender(DrawingContext dc)
+        //{
+        //    base.OnRender(dc);
+
+        //    double width = ActualWidth;
+        //    double height = ActualHeight;
+        //    double gridSize = GridSize;
+
+        //    Pen pen = new Pen(LineBrush, 0.4);
+        //    Pen sidePen = new Pen(LineBrush, 1);
+
+        //    int index = 0;
+        //    for (double x = 0; x < width; x += gridSize)
+        //    {
+        //        dc.DrawLine(IsSide(index) ? sidePen : pen, new Point(x, 0), new Point(x, height));
+        //        index++;
+        //    }
+        //    index = 0;
+        //    for (double y = 0; y < height; y += gridSize)
+        //    {
+        //        dc.DrawLine(IsSide(index) ? sidePen : pen, new Point(0, y), new Point(width, y));
+        //        index++;
+        //    }
+        //}
 
 
         public void BeginUpdateSelectedItems()
@@ -462,10 +621,10 @@ namespace RPA.Views.FlowEditor
         {
             SetLeft(workflowItem, Adsorb(GetLeft(workflowItem)));
             SetTop(workflowItem, Adsorb(GetTop(workflowItem)));
-            //Dispatcher.InvokeAsync(() =>
-            //{
-            //    workflowItem.UpdateCurve();
-            //}, DispatcherPriority.Render);
+            Dispatcher.InvokeAsync(() =>
+            {
+                workflowItem.UpdateCurve();
+            }, DispatcherPriority.Render);
         }
 
         private double Adsorb(double value)
@@ -501,6 +660,89 @@ namespace RPA.Views.FlowEditor
         //    return ellipseItem;
         //}
 
+        private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    Children.Add(CreateFlowNode(item));
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var oldItem in e.OldItems)
+                {
+                    var workflowItem = WorkflowItems.FirstOrDefault(x => x.DataContext == oldItem);
+                    //workflowItem.Delete();
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Replace)
+            {
+                var newItem = WorkflowItems.FirstOrDefault(x => x.DataContext == e.NewItems[0]);
+                var oldItem = WorkflowItems.FirstOrDefault(x => x.DataContext == e.OldItems[0]);
+                Children.Add(CreateFlowNode(newItem));
+                // oldItem.Delete();
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                Children.Clear();
+            }
+        }
+
+        public virtual void OnItemsSourceChanged(IEnumerable oldItemsSource, IEnumerable newItemsSource)
+        {
+            Children.Clear();
+            if (oldItemsSource != null)
+            {
+                if (oldItemsSource is INotifyCollectionChanged notifyCollectionChanged)
+                {
+                    notifyCollectionChanged.CollectionChanged -= CollectionChanged;
+                }
+            }
+            if (newItemsSource != null)
+            {
+                foreach (var item in newItemsSource.OfType<object>())
+                {
+                    Children.Add(CreateFlowNode(item));
+                }
+                if (newItemsSource is INotifyCollectionChanged notifyCollectionChanged)
+                {
+                    notifyCollectionChanged.CollectionChanged += CollectionChanged;
+                }
+            }
+        }
+
+
+        public FlowNode CreateFlowNode(object item)
+        {
+            FlowNode flowNode = null;
+            if (item is FlowNode node)
+            {
+                flowNode = node;
+                flowNode.DataContext = node;
+            }
+            else
+            {
+                flowNode = new FlowNode()
+                {
+                    DataContext  =item,
+                    Content = item
+                };
+            }
+            //flowNode
+
+            return flowNode;
+        }
+
+
+        private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var workflowEditor = (WorkflowEditor)d;
+            IEnumerable oldItemsSource = (IEnumerable)e.OldValue;
+            IEnumerable newItemsSource = (IEnumerable)e.NewValue;
+            workflowEditor.OnItemsSourceChanged(oldItemsSource, newItemsSource);
+        }
 
     }
 }

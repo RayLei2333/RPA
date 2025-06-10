@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.csproj" />
     <ProjectReference Include="..\RPA.Views\RPA.Views.csproj" />
   </ItemGroup>

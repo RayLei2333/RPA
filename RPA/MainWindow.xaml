@@ -8,6 +8,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <view:WorkflowEditor Background="#ccc"></view:WorkflowEditor>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button x:Name="addRect" Click="addRect_Click">添加矩形</Button>
+        </StackPanel>
+        <view:WorkflowEditor Grid.Row="1" x:Name="editor" Background="#ccc" ItemsSource="{Binding FlowNodes}"></view:WorkflowEditor>
     </Grid>
 </Window>

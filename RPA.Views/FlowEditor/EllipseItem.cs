@@ -34,7 +34,7 @@ namespace RPA.Views.FlowEditor
             set => SetValue(StrokeThicknessProperty, value);
         }
 
-        internal WorkflowItem WorkflowParent { get; set; }
+        internal FlowNode WorkflowParent { get; set; }
 
         internal PathItem PathItem { get; set; }
 
@@ -45,17 +45,17 @@ namespace RPA.Views.FlowEditor
 
         internal void RemoveStep()
         {
-            if (Dock == Dock.Right)
-            {
-                WorkflowParent.FirstOrDefault(WorkflowParent.JumpStep).FromStep = null;
-                WorkflowParent.JumpStep = null;
-            }
-            else if (Dock == Dock.Bottom)
-            {
-                //var w = WorkflowParent.FirstOrDefault(WorkflowParent.NextStep);
-                WorkflowParent.FirstOrDefault(WorkflowParent.NextStep).LastStep = null;
-                WorkflowParent.NextStep = null;
-            }
+            //if (Dock == Dock.Right)
+            //{
+            //    WorkflowParent.FirstOrDefault(WorkflowParent.JumpStep).FromStep = null;
+            //    WorkflowParent.JumpStep = null;
+            //}
+            //else if (Dock == Dock.Bottom)
+            //{
+            //    //var w = WorkflowParent.FirstOrDefault(WorkflowParent.NextStep);
+            //    WorkflowParent.FirstOrDefault(WorkflowParent.NextStep).LastStep = null;
+            //    WorkflowParent.NextStep = null;
+            //}
         }
     }
 }

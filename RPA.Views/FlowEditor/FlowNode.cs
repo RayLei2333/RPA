@@ -46,6 +46,62 @@ namespace RPA.Views.FlowEditor
 
         public Geometry Geometry { get; set; }
 
+        public object LastStep
+        {
+            get;
+            set;
+        }
+
+        public object FromStep
+        {
+            get;
+            set;
+        }
+
+        public object JumpStep
+        {
+            get;
+            set;
+        }
+
+        public object NextStep
+        {
+            get;
+            set;
+        }
+
+        public event RoutedEventHandler Selected;
+
+        public event RoutedEventHandler Unselected;
+
+        private EllipseItem EllipseLeft;
+        private EllipseItem EllipseTop;
+        private EllipseItem EllipseRight;
+        private EllipseItem EllipseBottom;
+        internal Dictionary<Dock, EllipseItem> EllipseItems { get; private set; }
+
+        public WorkflowEditor EditorParent { get; set; }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            EllipseLeft = GetTemplateChild("EllipseLeft") as EllipseItem;
+            EllipseTop = GetTemplateChild("EllipseTop") as EllipseItem;
+            EllipseRight = GetTemplateChild("EllipseRight") as EllipseItem;
+            EllipseBottom = GetTemplateChild("EllipseBottom") as EllipseItem;
+            EllipseItems = new Dictionary<Dock, EllipseItem>();
+
+            EllipseItems.Add(EllipseLeft.Dock, EllipseLeft);
+            EllipseItems.Add(EllipseTop.Dock, EllipseTop);
+            EllipseItems.Add(EllipseRight.Dock, EllipseRight);
+            EllipseItems.Add(EllipseBottom.Dock, EllipseBottom);
+            foreach (var item in EllipseItems.Values)
+            {
+                item.WorkflowParent = this;
+            }
+            //IsInit = true;
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             var background = Background;
@@ -127,7 +183,89 @@ namespace RPA.Views.FlowEditor
             Geometry = geometry;
             dc.DrawGeometry(brush, pen, geometry);
         }
+        //private static void OnWorkflowItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    ((FlowNode)d).OnWorkflowItemChanged(e);
+        //}
 
+        //protected virtual void OnWorkflowItemChanged(DependencyPropertyChangedEventArgs e)
+        //{
+        //    UpdateCurve();
+        //}
+        public void UpdateCurve()
+        {
+           
+            if (LastStep != null)
+            {
+                UpdateCurve(EllipseItems[Dock.Top].PathItem, FirstOrDefault(LastStep).EllipseItems[Dock.Bottom], EllipseItems[Dock.Top]);
+            }
+            if (NextStep != null)
+            {
+                UpdateCurve(EllipseItems[Dock.Bottom].PathItem, EllipseItems[Dock.Bottom], FirstOrDefault(NextStep).EllipseItems[Dock.Top]);
+            }
+            if (FromStep != null)
+            {
+                UpdateCurve(EllipseItems[Dock.Left].PathItem, FirstOrDefault(FromStep).EllipseItems[Dock.Right], EllipseItems[Dock.Left]);
+            }
+            if (JumpStep != null)
+            {
+                UpdateCurve(EllipseItems[Dock.Right].PathItem, EllipseItems[Dock.Right], FirstOrDefault(JumpStep).EllipseItems[Dock.Left]);
+            }
+        }
+
+        private void UpdateCurve(PathItem pathItem, EllipseItem startEllipseItem, EllipseItem endEllipseItem)
+        {
+            if (!startEllipseItem.IsVisible || !endEllipseItem.IsVisible)
+            {
+                return;
+            }
+
+            if (pathItem == null)
+            {
+                pathItem = new PathItem(EditorParent);
+                if (DataContext is not FlowNode)
+                {
+                    pathItem.Content = DataContext;
+                    pathItem.ContentTemplate = EditorParent.PathTemplate;
+                    pathItem.ContentTemplateSelector = EditorParent.PathTemplateSelector;
+                }
+                EditorParent.Children.Add(pathItem);
+                startEllipseItem.PathItem = pathItem;
+                endEllipseItem.PathItem = pathItem;
+                pathItem.StartEllipseItem = startEllipseItem;
+                pathItem.EndEllipseItem = endEllipseItem;
+            }
+            pathItem.UpdateBezierCurve(pathItem.StartEllipseItem.GetPoint(EditorParent), pathItem.EndEllipseItem.GetPoint(EditorParent));
+        }
+
+        internal FlowNode FirstOrDefault(object item)
+        {
+            return EditorParent.FirstOrDefault(item);
+        }
+        //    private void UpdateCurve(PathItem pathItem, EllipseItem startEllipseItem, EllipseItem endEllipseItem)
+        //    {
+        //        if (!startEllipseItem.IsVisible || !endEllipseItem.IsVisible)
+        //        {
+        //            return;
+        //        }
+
+        //        if (pathItem == null)
+        //        {
+        //            pathItem = new PathItem(EditorParent);
+        //            if (DataContext is not WorkflowItem)
+        //            {
+        //                pathItem.Content = DataContext;
+        //                pathItem.ContentTemplate = EditorParent.PathTemplate;
+        //                pathItem.ContentTemplateSelector = EditorParent.PathTemplateSelector;
+        //            }
+        //            EditorParent.Children.Add(pathItem);
+        //            startEllipseItem.PathItem = pathItem;
+        //            endEllipseItem.PathItem = pathItem;
+        //            pathItem.StartEllipseItem = startEllipseItem;
+        //            pathItem.EndEllipseItem = endEllipseItem;
+        //        }
+        //        pathItem.UpdateBezierCurve(pathItem.StartEllipseItem.GetPoint(EditorParent), pathItem.EndEllipseItem.GetPoint(EditorParent));
+        //    }
 
     }
 }

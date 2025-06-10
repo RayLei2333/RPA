@@ -1,0 +1,163 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:control="clr-namespace:RPA.Views.FlowEditor"
+                    xmlns:converters="clr-namespace:RPA.Views.FlowEditor.Converters">
+
+    <converters:EllipseItemVisibilityConverter x:Key="EllipseItemVisibilityConverter"></converters:EllipseItemVisibilityConverter>
+    <converters:EllipseItemMarginConverter x:Key="EllipseItemMarginConverter"></converters:EllipseItemMarginConverter>
+    <converters:DoNoThingConverter x:Key="DoNoThingConverter"></converters:DoNoThingConverter>
+
+    <Style x:Key="FlowNodeBaseStyle" TargetType="control:FlowNode">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#f99"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="control:FlowNode">
+                    <control:SimplePanel>
+                        <ContentPresenter Margin="{TemplateBinding Padding}"  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        <!--  左边的中间圆形  -->
+                        <control:EllipseItem x:Name="EllipseLeft" HorizontalAlignment="Left" VerticalAlignment="Center" Dock="Left" />
+                        <!--  顶边的中间圆形  -->
+                        <control:EllipseItem x:Name="EllipseTop" HorizontalAlignment="Center" VerticalAlignment="Top" Dock="Top" />
+                        <!--  右边的中间圆形  -->
+                        <control:EllipseItem x:Name="EllipseRight" HorizontalAlignment="Right" VerticalAlignment="Center" Dock="Right" />
+                        <!--  底边的中间圆形  -->
+                        <control:EllipseItem x:Name="EllipseBottom" HorizontalAlignment="Center" VerticalAlignment="Bottom" Dock="Bottom" />
+
+                    </control:SimplePanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+    <Style BasedOn="{StaticResource FlowNodeBaseStyle}" TargetType="control:FlowNode"></Style>
+
+
+    <Style x:Key="EllipseItemBaseStyle" TargetType="control:EllipseItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Width" Value="8" />
+        <Setter Property="Height" Value="8" />
+        <Setter Property="Background" Value="#FD5618" />
+        <Setter Property="BorderBrush" Value="#7B68EE" />
+        <Setter Property="Visibility">
+            <Setter.Value>
+                <MultiBinding Converter="{StaticResource EllipseItemVisibilityConverter}">
+                    <Binding Path="Dock" RelativeSource="{RelativeSource Mode=Self}" />
+                    <!--<Binding Path="StepType" RelativeSource="{RelativeSource AncestorType=control:WorkflowItem}" />-->
+                </MultiBinding>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Margin">
+            <Setter.Value>
+                <MultiBinding Converter="{StaticResource EllipseItemMarginConverter}">
+                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource Mode=Self}" />
+                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource Mode=Self}" />
+                    <Binding Path="Dock" RelativeSource="{RelativeSource Mode=Self}" />
+                    <Binding Path="BorderThickness" RelativeSource="{RelativeSource AncestorType=control:FlowNode}" />
+                    <Binding Path="ShapeType" RelativeSource="{RelativeSource AncestorType=control:FlowNode}" />
+                    <Binding Path="Shear" RelativeSource="{RelativeSource AncestorType=control:FlowNode}" />
+                </MultiBinding>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="control:EllipseItem">
+                    <Ellipse Width="{TemplateBinding Width}"
+                         Height="{TemplateBinding Height}"
+                         Margin="{TemplateBinding Padding}"
+                         Fill="{TemplateBinding Background}"
+                         Stroke="{TemplateBinding BorderBrush}"
+                         StrokeThickness="{TemplateBinding StrokeThickness}" />
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <!--<Condition Property="controls:WorkflowEditor.EditorStatus" Value="Drawing" />-->
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Height" Value="14" />
+                                <Setter Property="Width" Value="14" />
+                                <Setter Property="StrokeThickness" Value="3" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <!--<Condition Property="control:WorkflowEditor.EditorStatus" Value="None" />-->
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Height" Value="14" />
+                                <Setter Property="Width" Value="14" />
+                                <Setter Property="StrokeThickness" Value="3" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style BasedOn="{StaticResource EllipseItemBaseStyle}" TargetType="control:EllipseItem"></Style>
+
+
+    <Style x:Key="PathItemBaseStyle" TargetType="control:PathItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Panel.ZIndex" Value="-1" />
+        <Setter Property="ContextMenu">
+            <Setter.Value>
+                <ContextMenu DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="是否为曲线"
+                           IsCheckable="True"
+                           IsChecked="{Binding IsCurve}" />
+                    <MenuItem Command="{Binding DeleteCommand}" Header="删除" />
+                </ContextMenu>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="control:PathItem">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Path Fill="#111E1E1E"
+                           Stroke="{DynamicResource EnvironmentMainWindowActiveDefaultBorder}"
+                           StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                           StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="{Binding Point0, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource DoNoThingConverter}}">
+                                        <BezierSegment Point1="{Binding Point1, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource DoNoThingConverter}}"
+                                                    Point2="{Binding Point2, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource DoNoThingConverter}}"
+                                                    Point3="{Binding Point3, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource DoNoThingConverter}}" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                        <control:SimplePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </control:SimplePanel>
+
+                        <!--  Arrowhead  -->
+                        <Polygon Fill="{DynamicResource EnvironmentMainWindowActiveDefaultBorder}" Points="{Binding Points, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#122E2E2E" />
+                            <Setter Property="StrokeDashArray">
+                                <Setter.Value>
+                                    <DoubleCollection>2,2</DoubleCollection>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style BasedOn="{StaticResource PathItemBaseStyle}" TargetType="control:PathItem" />
+</ResourceDictionary>
