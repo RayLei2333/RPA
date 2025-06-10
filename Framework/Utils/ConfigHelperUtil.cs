@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Framework.Utils
 {
-    internal class ConfigHelperUtil
+    public static class ConfigHelperUtil
     {
         /// <summary>
         /// 根据Key取Value值
@@ -15,8 +17,26 @@ namespace Framework.Utils
         /// <param name="key"></param>
         public static string GetValue(string key)
         {
+            if (!ConfigurationManager.AppSettings.AllKeys.Contains(key))
+                return null;
             return ConfigurationManager.AppSettings[key].ToString().Trim();
         }
+
+        public static T GetValue<T>(string key)
+        {
+            string value = GetValue(key);
+            if (value == null)
+                return default(T);
+
+            Type targetType = typeof(T);
+            TypeConverter converter = TypeDescriptor.GetConverter(targetType);
+            if (converter.CanConvertFrom(typeof(string)))
+            {
+                return (T)converter.ConvertFromString(null, CultureInfo.InvariantCulture, value);
+            }
+            return (T)Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+        }
+
 
         /// <summary>
         /// 根据Key修改Value
