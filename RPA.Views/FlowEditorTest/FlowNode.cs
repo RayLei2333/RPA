@@ -19,6 +19,8 @@ namespace RPA.Views.FlowEditor
         /// </summary>
         public bool IsSelected { get; set; }
 
+        //public string Name { get; set; }
+
         /// <summary>
         /// 是否可拖动
         /// </summary>

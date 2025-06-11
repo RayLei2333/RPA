@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -232,6 +233,7 @@ namespace RPA.Views.FlowEditor
                 {
                     Point point = e.GetPosition(this);
                     var endEllipseItem = GetEllipseWithPoint(point);
+                    var node = GetNodeWithPoint(point);
                     if (endEllipseItem != null)
                     {
                         SetStep(_lastWorkflowItem.DataContext, endEllipseItem.WorkflowParent.DataContext, _lastEllipseItem, endEllipseItem);
@@ -519,6 +521,11 @@ namespace RPA.Views.FlowEditor
                 return null;
             }
             return ellipseItem;
+        }
+
+        private SimplePanel GetNodeWithPoint(Point point)
+        {
+            return this.GetVisualHit<SimplePanel>(point);
         }
 
         //protected override void OnRender(DrawingContext dc)

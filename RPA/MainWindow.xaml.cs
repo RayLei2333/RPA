@@ -41,7 +41,8 @@ namespace RPA
                 IsDraggable = true,
                 ShapeType = ShapeType.Rectangle,
                 BorderRadius = 8,
-                EditorParent = this.editor
+                EditorParent = this.editor,
+                Name = $"形状{(_viewModel.FlowNodes.Count + 1)}"
             });
         }
     }
