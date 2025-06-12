@@ -7,9 +7,10 @@
         <ResourceDictionary>
             <SolidColorBrush x:Key="EnvironmentMainWindowActiveDefaultBorder" Color="#FF9B9FB9" />
             <SolidColorBrush x:Key="SystemColorsWindow" Color="#FFEEEEF2" />
-            
+
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/RPA.Views;component/FlowEditor/EditorDictionary.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/RPA;component/res/Style/ExpanderStyle.xaml"></ResourceDictionary>
+                <!--<ResourceDictionary Source="pack://application:,,,/RPA.Views;component/FlowEditor/EditorDictionary.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

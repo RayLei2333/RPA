@@ -9,12 +9,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Page Remove="res\Style\ExpanderStyle.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="res\Style\ExpanderStyle.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.csproj" />
+    <ProjectReference Include="..\RPA.Controls\RPA.Controls.csproj" />
     <ProjectReference Include="..\RPA.Views\RPA.Views.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="res\Font\" />
   </ItemGroup>
 
 </Project>

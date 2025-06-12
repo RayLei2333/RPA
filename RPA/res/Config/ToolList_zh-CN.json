@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Basic",
+    "enable": true,
+    "tools": [
+      {
+        "icon": "",
+        "name": "ceshiceshi",
+        "type":"test"
+      }
+    ]
+  }
+]

@@ -13,8 +13,9 @@ namespace RPA
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            ConfigHelperUtil.GetValue("MQTT");
-            //ConfigHelperUtil.GetSection("mqtt");
+
+            //var info = System.Threading.Thread.CurrentThread.CurrentUICulture;
+            //string lang = info.IetfLanguageTag;
         }
     }
 

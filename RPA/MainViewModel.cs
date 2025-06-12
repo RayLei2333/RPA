@@ -1,5 +1,5 @@
 ﻿using PropertyChanged;
-using RPA.Views.FlowEditor;
+//using RPA.Views.FlowEditor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +12,7 @@ namespace RPA
     [AddINotifyPropertyChangedInterface]
     internal class MainViewModel
     {
-        public ObservableCollection<FlowNode> FlowNodes { get; set; } = new ObservableCollection<FlowNode>();
+        //public ObservableCollection<FlowNode> FlowNodes { get; set; } = new ObservableCollection<FlowNode>();
 
 
     }

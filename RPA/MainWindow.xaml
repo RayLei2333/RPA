@@ -3,18 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:view="clr-namespace:RPA.Views.FlowEditor;assembly=RPA.Views"
+       
         xmlns:local="clr-namespace:RPA"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid x:Name="grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button x:Name="addRect" Click="addRect_Click">添加矩形</Button>
         </StackPanel>
-        <view:WorkflowEditor Grid.Row="1" x:Name="editor" Background="#ccc" ItemsSource="{Binding FlowNodes}"></view:WorkflowEditor>
+        <!--<view:WorkFlowEditor Grid.Row="0" x:Name="editor" Background="#ccc"></view:WorkFlowEditor>-->
     </Grid>
 </Window>
