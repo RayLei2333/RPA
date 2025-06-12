@@ -1,12 +1,13 @@
 [
   {
-    "name": "Basic",
-    "enable": true,
-    "tools": [
+    "Name": "Basic",
+    "Enable": true,
+    "Tools": [
       {
-        "icon": "",
-        "name": "ceshiceshi",
-        "type":"test"
+        "Icon": "",
+        "Name": "ceshiceshi",
+        "Type": "test",
+        "Enable": true
       }
     ]
   }

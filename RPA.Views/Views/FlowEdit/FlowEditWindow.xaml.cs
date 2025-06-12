@@ -22,6 +22,11 @@ namespace RPA.Views.Views.FlowEdit
         public FlowEditWindow()
         {
             InitializeComponent();
+
+            //this.toolListView.ToolMoveHandler += ToolListView_ToolMoveHandler;
+            //this.toolListView.ToolUpHandler += ToolListView_ToolUpHandler;
         }
+
+        
     }
 }

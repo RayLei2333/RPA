@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using RPA.Views.Views.FlowEdit;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
@@ -18,7 +19,7 @@ namespace RPA
     /// </summary>
     /// 
 
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window//, INotifyPropertyChanged
     {
         private MainViewModel _viewModel;
         //private WorkFlowEditor editor;
@@ -91,6 +92,12 @@ namespace RPA
             //    EditorParent = this.editor,
             //    Name = $"形状{(_viewModel.FlowNodes.Count + 1)}"
             //});
+        }
+
+        private void openEdit_Click(object sender, RoutedEventArgs e)
+        {
+            FlowEditWindow flowEdit = new FlowEditWindow();
+            flowEdit.Show();
         }
     }
 }

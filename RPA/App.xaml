@@ -10,8 +10,8 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/RPA;component/res/Style/ExpanderStyle.xaml"></ResourceDictionary>
-                <!--<ResourceDictionary Source="pack://application:,,,/RPA.Views;component/FlowEditor/EditorDictionary.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
+                <!--<ResourceDictionary Source="pack://application:,,,/RPA.Views;component/FlowEditor/EditorDictionary.xaml"/>-->

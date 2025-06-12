@@ -43,11 +43,12 @@ namespace RPA.Views.Views.FlowEdit
             var info = System.Threading.Thread.CurrentThread.CurrentUICulture;
             _lang = info.ToString();
             //_toolGroup = new List<ToolGroupModel>();
+            InitToolbox();
         }
 
         public void InitToolbox()
         {
-            string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Config/ToolList_{_lang}.json");
+            string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"res/Config/ToolList_{_lang}.json");
             _toolGroup = JsonSerializer.Deserialize<List<ToolGroupModel>>(File.ReadAllText(configPath));
 
             if (_toolGroup == null || !_toolGroup.Any())
@@ -57,7 +58,7 @@ namespace RPA.Views.Views.FlowEdit
             {
                
                 Expander expander = new Expander();
-                var style = this.Resources["ExpanderStyle"];
+                var style = Application.Current.FindResource("ExpanderStyle");//this.Resources["ExpanderStyle"];
                 expander.SetValue(Expander.StyleProperty, style);
                 Label label = new Label();
                 label.Content = item.Name;

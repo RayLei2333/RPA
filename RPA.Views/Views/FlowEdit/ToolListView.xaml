@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel LastChildFill="True">
-        <Border Height="39" DockPanel.Dock="Top" BorderBrush="#222222" BorderThickness="2">
+        <Border Height="39" DockPanel.Dock="Top" BorderBrush="#222222" BorderThickness="2" Background="#222222">
             <!-- 起始颜色 -->
             <!-- 结束颜色 -->
             <!--<Border.Background>
@@ -17,7 +17,7 @@
                 </LinearGradientBrush>
             </Border.Background>-->
 
-            <TextBlock Text="工具箱" VerticalAlignment="Center" Foreground="White" FontSize="16" Margin="16, 0, 0, 0"></TextBlock>
+            <TextBlock Text="工具箱" VerticalAlignment="Center" Foreground="#fff" FontSize="16" Margin="16, 0, 0, 0"></TextBlock>
         </Border>
 
         <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
