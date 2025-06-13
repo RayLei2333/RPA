@@ -12,7 +12,7 @@ namespace RPA.Controls.FlowEditor
 
         public string Name { get; set; }
 
-        public string Type { get; set; }
+        public FlowNodeType NodeType { get; set; }
 
         public FlowNode Parent { get; set; }
 
