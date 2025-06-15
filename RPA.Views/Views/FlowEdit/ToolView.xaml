@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:RPA.Views.Views.FlowEdit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <DockPanel LastChildFill="True">
-        <TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Name="tbkToolName" Text="工具名" FontSize="14" Foreground="White" Margin="0, 0, 0, 2"></TextBlock>
-        <TextBlock x:Name="imgToolIcon" DockPanel.Dock="Top" Margin="4, 4, 4, 4" Width="30"/>
+    <DockPanel Width="80" Height="80">
+        <TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Name="tbkToolName" Text="{Binding Name}" FontSize="14" Foreground="White" Margin="0, 0, 0, 2"></TextBlock>
+        <TextBlock x:Name="imgToolIcon" Text="{Binding Icon}" DockPanel.Dock="Top" Margin="4, 4, 4, 4" Width="30"/>
     </DockPanel>
 </UserControl>

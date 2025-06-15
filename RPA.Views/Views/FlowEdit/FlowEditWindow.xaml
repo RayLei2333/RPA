@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RPA.Views.Views.FlowEdit"
+        xmlns:editor="clr-namespace:RPA.Controls.FlowEditor;assembly=RPA.Controls"
         mc:Ignorable="d"
         Title="FlowEditWindow" Height="450" Width="800">
     <Grid>
@@ -15,16 +16,36 @@
         <StackPanel Grid.Row="0" VerticalAlignment="Center">
             <TextBlock Text="顶部导航"></TextBlock>
         </StackPanel>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <Canvas x:Name="ContentCanvas" Grid.Row="1" ClipToBounds="True" DockPanel.Dock="Top">
+            <Grid Height="{Binding Path=ActualHeight, ElementName=ContentCanvas}" Width="{Binding Path=ActualWidth, ElementName=ContentCanvas}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" MinWidth="80"></ColumnDefinition>
+                    <ColumnDefinition Width="2"></ColumnDefinition>
+                    <ColumnDefinition Width="*" ></ColumnDefinition>
+                    <ColumnDefinition Width="250"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-            <!-- 工具箱 -->
-            <local:ToolListView Grid.Column="0" x:Name="toolListView" />
+                <!-- 工具箱 -->
+                <local:ToolListView Grid.Column="0" x:Name="toolListView" MinWidth="80"/>
 
-            
-        </Grid>
+                <GridSplitter Grid.Column="1" Background="#222" Width="2"  ResizeBehavior="PreviousAndNext"></GridSplitter>
+
+
+                <!--流程编辑视图-->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="39"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <!--流程编辑顶部tab-->
+                    <WrapPanel Grid.Row="0" Background="Black"></WrapPanel>
+                    <editor:WorkflowEditor Grid.Row="1" Background="#ccc"></editor:WorkflowEditor>
+                </Grid>
+
+                <StackPanel Grid.Column="3" Background="#ccc"></StackPanel>
+
+
+            </Grid>
+        </Canvas>
     </Grid>
 </Window>

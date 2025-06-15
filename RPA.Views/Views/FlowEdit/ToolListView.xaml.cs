@@ -29,82 +29,46 @@ namespace RPA.Views.Views.FlowEdit
 
         public delegate void ToolSelectUpHandler(object sender, MouseButtonEventArgs args);
 
+        public delegate void ToolSelectDownHandler(object sender, MouseButtonEventArgs args);
+
         public ToolSelectMoveHandler ToolMoveHandler;
 
         public ToolSelectUpHandler ToolUpHandler;
 
+        public ToolSelectDownHandler ToolDownHandler;
+
         private bool MousePress = false;
 
         private List<ToolGroupModel> _toolGroup;
+
+        public List<ToolGroupModel> ToolGroup { get; set; }
+
         private string _lang;
         public ToolListView()
         {
             InitializeComponent();
+            this.DataContext = this;
             var info = System.Threading.Thread.CurrentThread.CurrentUICulture;
             _lang = info.ToString();
-            //_toolGroup = new List<ToolGroupModel>();
             InitToolbox();
         }
 
         public void InitToolbox()
         {
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"res/Config/ToolList_{_lang}.json");
-            _toolGroup = JsonSerializer.Deserialize<List<ToolGroupModel>>(File.ReadAllText(configPath));
-
-            if (_toolGroup == null || !_toolGroup.Any())
+            var list = JsonSerializer.Deserialize<List<ToolGroupModel>>(File.ReadAllText(configPath));
+            if (list == null || !list.Any())
                 return;
-            var list = _toolGroup.Where(t => t.Enable).ToList();
+
+            list = list.Where(t => t.Enable).ToList();
             foreach (var item in list)
             {
-               
-                Expander expander = new Expander();
-                var style = Application.Current.FindResource("ExpanderStyle");//this.Resources["ExpanderStyle"];
-                expander.SetValue(Expander.StyleProperty, style);
-                Label label = new Label();
-                label.Content = item.Name;
-                label.FontSize = 14;
-                label.Foreground = new SolidColorBrush(Colors.White);
-                expander.Header = label;
-                expander.Margin = new Thickness(12, 0, 0, 0);
-                if(item.Tools != null && item.Tools.Any())
-                {
-                    var tools = item.Tools.Where(t => t.Enable).ToList();
-                    int toolCount = tools.Count;
-                    var gridLayout = new Grid();
-                    int col = 3;
-                    int row = toolCount / 3 + (toolCount % 3 == 0 ? 0 : 1);
-                    for (int i = 0; i < col; i++)
-                    {
-                        gridLayout.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                    }
-                    for (int i = 0; i < row; i++)
-                    {
-                        gridLayout.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(80) });
-                    }
-                    for (int i = 0; i < toolCount; i++)
-                    {
-                        var tool = tools[i];
-                        ToolView toolView = new ToolView();
-                        toolView.SetTool(tool.Icon, tool.Name, tool.Type);
-                        gridLayout.Children.Add(toolView);
-                        toolView.MouseDown += new MouseButtonEventHandler(ToolViewMouseDown);
-                        toolView.MouseMove += new MouseEventHandler(ToolViewMouseMove);
-                        toolView.MouseUp += new MouseButtonEventHandler(ToolViewMouseUp);
-                        Grid.SetColumn(toolView, i % 3);
-                        Grid.SetRow(toolView, i / 3);
-                    }
-                    expander.Content = gridLayout;
-
-                }
-                
-
-
-                expander.IsExpanded = true;
-                expander.Margin = new Thickness(12, 12, 12, 12);
-                spToolList.Children.Add(expander);
-                spToolList.Background= new SolidColorBrush(Color.FromRgb(38, 38, 38));
+                item.Tools = item.Tools.Where(t => t.Enable).ToList();
             }
+            ToolGroup = list;
         }
+
+       
 
         /// <summary>
         /// 鼠标按下

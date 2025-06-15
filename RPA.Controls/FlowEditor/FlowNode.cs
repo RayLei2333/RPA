@@ -14,6 +14,8 @@ namespace RPA.Controls.FlowEditor
 
         public FlowNodeType NodeType { get; set; }
 
+        public ShapeType ShapeType { get; set; }
+
         public FlowNode Parent { get; set; }
 
         public List<FlowNode> Childs { get; set; } = new List<FlowNode>();

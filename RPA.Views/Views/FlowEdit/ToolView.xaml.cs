@@ -20,25 +20,17 @@ namespace RPA.Views.Views.FlowEdit
     /// </summary>
     public partial class ToolView : UserControl
     {
-        private string _toolType;
-
         public ToolView()
         {
             InitializeComponent();
         }
 
-        public void SetTool(string icon, string name, string type)
-        {
-            this.imgToolIcon.Text = icon;
-            this.tbkToolName.Text = name;
-            _toolType = type;
-        }
-
         public ToolView Clone()
         {
-            ToolView toolView = new ToolView();
-            toolView.SetTool(imgToolIcon.Text, tbkToolName.Text, _toolType);
-            return toolView;
+            ToolView view = new ToolView();
+            view.DataContext = this.DataContext;
+            return view;
         }
+
     }
 }

@@ -61,7 +61,7 @@ namespace RPA.Controls.FlowEditor
             Width = streamsW;
         }
 
-        public WrokflowItem InitBlockView(WrokflowEditor editor, int x, int y, int regionWidth, WrokflowItem parent)
+        public WorkflowItem InitBlockView(WorkflowEditor editor, int x, int y, int regionWidth, WorkflowItem parent)
         {
             int startY = y,
                 startX = x;
@@ -72,19 +72,18 @@ namespace RPA.Controls.FlowEditor
             //添加连线规则
             if (parent != null)
             {
-
+                editor.AddArrowView(parent, nodeView);
             }
             parent = nodeView;
-            startY += 80;
+            startY += (int)nodeView.Margin.Bottom;
             int height = 0,
                 totalWidth = 0;
             for (int i = 0; i < _streamList.Count; i++)
             {
-
-                totalWidth = i == 0 ? _streamList[i].Width : totalWidth + _streamList[i].Width + 30;
+                totalWidth = i == 0 ? _streamList[i].Width : totalWidth + _streamList[i].Width + (int)nodeView.Margin.Right;
             }
             startX += (regionWidth - totalWidth) / 2;
-            List<WrokflowItem> list = new List<WrokflowItem>();
+            List<WorkflowItem> list = new List<WorkflowItem>();
             foreach (var stream in _streamList)
             {
                 list.Add(editor.InitNodeView(startX, startY, regionWidth, parent));
@@ -102,6 +101,7 @@ namespace RPA.Controls.FlowEditor
             foreach (var item in list)
             {
                 //创建连线规则
+                editor.AddArrowView(item, endNodeView);
             }
 
             return endNodeView;

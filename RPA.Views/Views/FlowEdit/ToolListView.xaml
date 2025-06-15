@@ -20,9 +20,35 @@
             <TextBlock Text="工具箱" VerticalAlignment="Center" Foreground="#fff" FontSize="16" Margin="16, 0, 0, 0"></TextBlock>
         </Border>
 
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
-            <StackPanel x:Name="spToolList" Orientation="Vertical">
-            </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" x:Name="scrollViewer">
+            <WrapPanel x:Name="spToolList" Orientation="Vertical" Background="#383838" Width="{Binding ElementName=scrollViewer, Path=ActualWidth}">
+                <ItemsControl ItemsSource="{Binding ToolGroup}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Expander Style="{StaticResource ExpanderStyle}">
+                                <Expander.Header>
+                                    <Label Content="{Binding Name}" FontSize="14" Foreground="White" Margin="8,0,0,0"></Label>
+                                </Expander.Header>
+                                <ItemsControl ItemsSource="{Binding Tools}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"></WrapPanel>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:ToolView MouseDown="ToolViewMouseDown" MouseUp="ToolViewMouseUp" MouseMove="ToolViewMouseMove" >
+
+                                            </local:ToolView>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+            </WrapPanel>
         </ScrollViewer>
     </DockPanel>
 </UserControl>

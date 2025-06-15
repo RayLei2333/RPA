@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,8 +26,54 @@ namespace RPA.Views.Views.FlowEdit
 
             //this.toolListView.ToolMoveHandler += ToolListView_ToolMoveHandler;
             //this.toolListView.ToolUpHandler += ToolListView_ToolUpHandler;
+
+            //this.toolListView.ToolDownHandler += ToolListView_ToolDownHandler;
+            this.toolListView.ToolUpHandler += ToolListView_ToolUpHandler;
+            this.toolListView.ToolMoveHandler += ToolListView_ToolMoveHandler;
+
         }
 
-        
+        private ToolView _moveToolView;
+
+        private void ToolListView_ToolMoveHandler(object sender, MouseEventArgs args)
+        {
+            // Handle tool move logic here
+            var view = sender as ToolView;
+            if (view != null)
+            {
+
+                if (_moveToolView == null)
+                {
+                    _moveToolView = view.Clone();
+                    ContentCanvas.Children.Add(_moveToolView);
+                }
+                var point = args.GetPosition(ContentCanvas);
+                Canvas.SetLeft(_moveToolView, point.X);
+                Canvas.SetTop(_moveToolView, point.Y);
+            }
+        }
+
+        private void ToolListView_ToolUpHandler(object sender, MouseButtonEventArgs args)
+        {
+            if (_moveToolView == null)
+                return;
+
+            ContentCanvas.Children.Remove(_moveToolView);
+
+            _moveToolView = null;
+
+            // Handle tool up logic here
+            //if(sender is DockPanel panel)
+            //{
+
+            //}
+
+        }
+
+        private void ToolListView_ToolDownHandler(object sender, MouseButtonEventArgs args)
+        {
+            // Handle tool up logic here
+        }
+
     }
 }

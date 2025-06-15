@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-       
+        xmlns:view="clr-namespace:RPA.Controls.FlowEditor;assembly=RPA.Controls"
         xmlns:local="clr-namespace:RPA"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
@@ -16,6 +16,6 @@
             <Button x:Name="addRect" Click="addRect_Click">添加矩形</Button>
             <Button x:Name="openEdit" Click="openEdit_Click">打开编辑</Button>
         </StackPanel>
-        <!--<view:WorkFlowEditor Grid.Row="0" x:Name="editor" Background="#ccc"></view:WorkFlowEditor>-->
+        <view:WorkflowEditor x:Name="editor" Grid.Row="0"></view:WorkflowEditor>
     </Grid>
 </Window>

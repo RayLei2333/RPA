@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RPA.Views.ViewModels.FlowEdit
 {
-    internal class ToolModel
+    public class ToolModel
     {
         /// <summary>
         /// 工具名称
