@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <!--<Nullable>enable</Nullable>-->
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<!--<Nullable>enable</Nullable>-->
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Flow\" />
-    <Folder Include="Models\" />
-    <Folder Include="Spots\" />
-    <Folder Include="WorkflowCore\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Models\" />
+		<Folder Include="Spots\" />
+		<Folder Include="WorkflowCore\Tool\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="log4net" Version="3.1.0" />
-    <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
-    <PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.5" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="log4net" Version="3.1.0" />
+		<PackageReference Include="MQTTnet" Version="5.0.1.1416" />
+		<PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.5" />
+	</ItemGroup>
 
 </Project>
