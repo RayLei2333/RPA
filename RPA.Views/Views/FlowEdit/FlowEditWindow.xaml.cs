@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RPA.Controls.FlowEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -59,7 +60,31 @@ namespace RPA.Views.Views.FlowEdit
                 return;
 
             ContentCanvas.Children.Remove(_moveToolView);
+            var point = args.GetPosition(this.FlowEditor);
+            var view = this.FlowEditor.GetNode(point);
+            if(view != null)
+            {
+                string[] aroundId = this.FlowEditor.GetAroundId(view);
+                if(aroundId != null)
+                {
+                    string parentId = aroundId[0];
+                    string childId = aroundId[1];
 
+                    //添加工具列表
+                    //var tools = CurFlow.FlowTools.InsertNewTool(MoveToolView.GetToolType(), MoveToolView.GetToolName(), parentId, childId);
+                    //foreach (var tool in tools)
+                    //{
+                    //    //通过tool 创建FlowNode
+                    //    FlowNode node = null; //CreateNodeView(tool);
+                    //    this.FlowEditor.AddFlowNode(node, parentId, childId);
+                    //    //var addNode = this.FlowEditor.CreateNodeView(tool);
+                    //    //FlowEditView.AddFlowNode(addNode, parentId, childId);
+                    //    parentId = node.Id;
+                    //}
+                    this.FlowEditor.RefreshLayout();
+
+                }
+            }
             _moveToolView = null;
 
             // Handle tool up logic here

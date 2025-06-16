@@ -39,7 +39,7 @@
                     </Grid.RowDefinitions>
                     <!--流程编辑顶部tab-->
                     <WrapPanel Grid.Row="0" Background="Black"></WrapPanel>
-                    <editor:WorkflowEditor Grid.Row="1" Background="#ccc"></editor:WorkflowEditor>
+                    <editor:WorkflowEditor x:Name="FlowEditor" Grid.Row="1" Background="#ccc"></editor:WorkflowEditor>
                 </Grid>
 
                 <StackPanel Grid.Column="3" Background="#ccc"></StackPanel>

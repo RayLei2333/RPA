@@ -37,9 +37,7 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <local:ToolView MouseDown="ToolViewMouseDown" MouseUp="ToolViewMouseUp" MouseMove="ToolViewMouseMove" >
-
-                                            </local:ToolView>
+                                            <local:ToolView ShowName="{Binding Name}" ShowIcon="{Binding Icon}" MouseDown="ToolViewMouseDown" MouseUp="ToolViewMouseUp" MouseMove="ToolViewMouseMove" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

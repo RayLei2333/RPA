@@ -75,5 +75,11 @@ namespace RPA.Controls.FlowEditor
             }
             ArrowViews.Add(arrow);
         }
+
+        public bool Contain(Point point)
+        {
+            Rect rect = new Rect(Canvas.GetLeft(this), Canvas.GetTop(this), this.ActualWidth, this.ActualHeight);
+            return rect.Contains(point);
+        }
     }
 }

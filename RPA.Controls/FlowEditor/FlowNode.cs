@@ -19,5 +19,20 @@ namespace RPA.Controls.FlowEditor
         public FlowNode Parent { get; set; }
 
         public List<FlowNode> Childs { get; set; } = new List<FlowNode>();
+
+
+        public void ReplaceSubNode(FlowNode oldNode, FlowNode newNode)
+        {
+            int index = Childs.IndexOf(oldNode);
+            if (index != -1)
+            {
+                Childs[index] = newNode;
+            }
+            else
+            {
+                Childs.Add(newNode);
+            }
+        }
+
     }
 }

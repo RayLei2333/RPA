@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
 
@@ -15,16 +18,55 @@ namespace RPA.Controls.FlowEditor
 
         public NodeStream NodeStream { get; set; }
 
+        private Dictionary<string, FlowNode> _flowNodes;
+
         public void SetFlowNodes(Dictionary<string, FlowNode> flowNodes)
         {
-            var startNode = flowNodes["start"];
-            var end = flowNodes["end"];
-            NodeStream = new NodeStream();
-            NodeStream.SetStartEndNode(startNode, end, flowNodes);
-            NodeStream.CalcSize();
+            _flowNodes = flowNodes;
 
+
+            GenerateFlowModule();
         }
 
+        /// <summary>
+        /// 流程模块划分
+        /// </summary>
+        private void GenerateFlowModule()
+        {
+            var startNode = _flowNodes["start"];
+            var end = _flowNodes["end"];
+            NodeStream = new NodeStream();
+            NodeStream.SetStartEndNode(startNode, end, _flowNodes);
+            NodeStream.CalcSize();
+        }
+
+
+        /// <summary>
+        /// 添加节点
+        /// </summary>
+        /// <param name="node">添加的节点</param>
+        /// <param name="parentId">父节点Id</param>
+        /// <param name="childId">子节点Id</param>
+        public void AddFlowNode(FlowNode node, string parentId, string childId)
+        {
+            var parentNode = _flowNodes[parentId];
+            if (parentNode.NodeType == FlowNodeType.End)
+                return;
+            var childNode = _flowNodes[childId];
+
+            _flowNodes.Add(node.Id, node);
+            parentNode.ReplaceSubNode(childNode, node);
+            node.Childs.Add(childNode);
+            node.Parent = parentNode;
+            childNode.Parent = node;
+        }
+
+        /// <summary>
+        /// 初始化节点
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="regionWidth"></param>
         public void InitNodeView(int x, int y, int regionWidth)
         {
             regionWidth = (int)this.ActualWidth;
@@ -123,6 +165,11 @@ namespace RPA.Controls.FlowEditor
 
         }
 
+        /// <summary>
+        /// 创建节点
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public WorkflowItem CreateNodeView(FlowNode node)
         {
             WorkflowItem item = new WorkflowItem();
@@ -132,6 +179,70 @@ namespace RPA.Controls.FlowEditor
             return item;
         }
 
+        /// <summary>
+        /// 添加节点
+        /// </summary>
+        /// <param name="args"></param>
+        public object GetNode(Point point)
+        {
+            foreach (var child in this.Children)
+            {
+                if (child is ArrowView arrowView)
+                {
+                    if (arrowView.Contain(point))
+                        return child;
+                }
 
+                if (child is WorkflowItem workflowItem)
+                {
+                    if (workflowItem.Contain(point))
+                        return workflowItem;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 获取父节点和子节点Id
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        public string[] GetAroundId(object view)
+        {
+            string parentId = null,
+                   childId = null;
+
+            if (view is ArrowView arrowView)
+            {
+                parentId = arrowView.FromNode.FlowNode.Id;
+                childId = arrowView.ToNode.FlowNode.Id;
+            }
+
+            if (view is WorkflowItem workflowItem)
+            {
+                if (workflowItem.FlowNode.NodeType == FlowNodeType.End)
+                    return null;
+                parentId = workflowItem.FlowNode.Id;
+
+                if (workflowItem.FlowNode.Childs.Count > 0)
+                    childId = workflowItem.FlowNode.Childs[0].Id;
+
+            }
+
+
+            return new string[] { parentId, childId };
+        }
+
+
+        /// <summary>
+        /// 刷新布局
+        /// </summary>
+        public void RefreshLayout()
+        {
+            this.Children.Clear();
+            GenerateFlowModule();
+            InitNodeView(0, 0, 0);
+        }
     }
 }

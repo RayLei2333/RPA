@@ -70,9 +70,9 @@ namespace RPA.Controls.FlowEditor
 
         private int LineType = 0;
 
-        public WorkflowItem FromNode;
+        public WorkflowItem FromNode { get; set; }
 
-        public WorkflowItem ToNode;
+        public WorkflowItem ToNode { get; set; }
         #endregion
 
         #region Overrides
