@@ -37,14 +37,13 @@ namespace RPA.Views.Views.FlowEdit
 
         public string ShowIcon
         {
-            get => ( string)GetValue(ShowIconProperty);
+            get => (string)GetValue(ShowIconProperty);
             set => SetValue(ShowIconProperty, value);
         }
 
         public ToolView()
         {
             InitializeComponent();
-            this.DataContext = this;
         }
 
         public ToolView Clone()

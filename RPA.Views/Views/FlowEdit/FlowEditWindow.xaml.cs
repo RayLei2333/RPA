@@ -70,6 +70,16 @@ namespace RPA.Views.Views.FlowEdit
                     string parentId = aroundId[0];
                     string childId = aroundId[1];
 
+                    FlowNode node = new FlowNode()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "添加",
+                        NodeType = FlowNodeType.Default,
+                        ShapeType = ShapeType.Rectangle,
+                    };
+                    this.FlowEditor.AddFlowNode(node, parentId, childId);
+                    parentId = node.Id;
+
                     //添加工具列表
                     //var tools = CurFlow.FlowTools.InsertNewTool(MoveToolView.GetToolType(), MoveToolView.GetToolName(), parentId, childId);
                     //foreach (var tool in tools)
@@ -95,10 +105,36 @@ namespace RPA.Views.Views.FlowEdit
 
         }
 
-        private void ToolListView_ToolDownHandler(object sender, MouseButtonEventArgs args)
-        {
-            // Handle tool up logic here
-        }
 
+        private void AddTestNode_Click(object sender, RoutedEventArgs e)
+        {
+            FlowNode sNode = new FlowNode()
+            {
+                Id = "start",
+                Name = "开始",
+                NodeType = FlowNodeType.Start,
+                ShapeType = ShapeType.Circle
+            };
+
+            FlowNode eNode = new FlowNode()
+            {
+                Id = "end",
+                Name = "结束",
+                Parent = sNode,
+                NodeType = FlowNodeType.End,
+                ShapeType = ShapeType.Rectangle
+            };
+
+            sNode.Childs.Add(eNode);
+
+            Dictionary<string, FlowNode> nodes = new Dictionary<string, FlowNode>()
+            {
+                ["start"] = sNode,
+                ["end"] = eNode
+            };
+
+            this.FlowEditor.SetFlowNodes(nodes);
+            this.FlowEditor.InitNodeView(0, 0, 0);
+        }
     }
 }

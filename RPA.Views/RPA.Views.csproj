@@ -12,4 +12,8 @@
     <ProjectReference Include="..\RPA.Controls\RPA.Controls.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
 </Project>

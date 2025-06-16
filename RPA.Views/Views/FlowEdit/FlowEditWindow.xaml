@@ -42,7 +42,9 @@
                     <editor:WorkflowEditor x:Name="FlowEditor" Grid.Row="1" Background="#ccc"></editor:WorkflowEditor>
                 </Grid>
 
-                <StackPanel Grid.Column="3" Background="#ccc"></StackPanel>
+                <StackPanel Grid.Column="3" Background="#ccc">
+                    <Button Content="添加测试节点" x:Name="AddTestNode" Click="AddTestNode_Click"></Button>
+                </StackPanel>
 
 
             </Grid>

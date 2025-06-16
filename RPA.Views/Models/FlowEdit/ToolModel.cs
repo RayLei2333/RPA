@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPA.Views.ViewModels.FlowEdit
+namespace RPA.Views.Models.FlowEdit
 {
     public class ToolModel
     {

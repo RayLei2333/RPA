@@ -1,4 +1,4 @@
-﻿using RPA.Views.ViewModels.FlowEdit;
+﻿using RPA.Views.Models.FlowEdit;
 using System;
 using System.Collections.Generic;
 using System.IO;
